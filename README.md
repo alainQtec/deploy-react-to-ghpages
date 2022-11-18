@@ -13,7 +13,7 @@ Copy and paste the following snippet into your .yml file.
 
 ## Use case Example
 
-Create deploy.yml in .github/workflows/
+Create `build-and-deploy.yml` in [`.github/workflows/`](#/tree/main/.github/workflows)
 
 Set its content to:
 
