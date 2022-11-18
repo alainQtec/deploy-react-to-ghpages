@@ -1,0 +1,37 @@
+name: 'Deploy react app to github pages'
+description: 'This action will automate the process of building and depolying react app in gh-pages branch.'
+author: 'alainQtec'
+branding:
+  color: blue
+  icon: truck
+runs: 
+  using: 'composite'
+  steps: 
+    # Configure the commit signature to come from github-actions at github-actions@github.com
+    - name : Configuring git username and email...
+      run : git config user.name github-actions && git config user.email github-actions@github.com
+      shell: bash
+    # Clean install dependencies (https://docs.npmjs.com/cli/v7/commands/npm-ci)
+    - name : Installing dependencies...
+      run : npm ci
+      shell: bash
+    # Build the react app
+    - name : Building react app...
+      run : npm run build
+      shell: bash
+    # Bump the minor version of the react app and create a new tag
+    - name : Bumping minor version...
+      run : npm version minor
+      shell: bash
+    # Add all changes from the work-tree
+    - name : Adding changes from the working tree...
+      run : git --work-tree build add --all
+      shell: bash
+    # Commit all changes (automatically deploys commit with the current version number via grep)
+    - name : Committing changes...
+      run : git commit -m "Automatically deploying v$(npm version | grep 'site' | grep -E -o "[0-9]+\.[0-9]+\.[0-9]+[^']*")"
+      shell: bash
+    # Push the changes to the gh-pages branch
+    - name : Pushing changes to gh-pages branch...
+      run : git push origin HEAD:gh-pages --force
+      shell: bash
